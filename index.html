@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Recipes - Web Application</title>
+
+    <link rel="stylesheet" href="./foodSearch.css">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+
+    <link href="https://fonts.googleapis.com/css2?family=KoHo:wght@200;300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <script src="https://kit.fontawesome.com/164bd13fb2.js" crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+
+    <nav>
+
+        <div class="logoDiv">
+
+            <img src="./logo.png" alt="">
+
+        </div>
+
+        <ul>
+
+            <li>Home</li>
+
+            <li>About</li>
+
+            <li>Portfolio</li>
+
+            <li>Services</li>
+
+            <li>Contact Us</li>
+
+        </ul>
+
+    </nav>
+
+    <div class="searchAreaDiv">
+
+        <input type="text" placeholder="Search Food" autocomplete="off" id="searchBoxTxt" oninput="fetchDataFromApi()">
+
+    </div>
+
+    <div class="foodContainer"></div>
+
+</body>
+
+<script>
+
+    var foodContainer = document.getElementsByClassName('foodContainer')[0]
+
+    var sugguestContainer = document.getElementsByClassName('sugguestContainer')[0]
+
+    var searchAreaDiv = document.getElementsByClassName('searchAreaDiv')[0]
+
+    var searchBox = document.getElementById('searchBoxTxt')
+
+    var fetchedData = 0
+
+    function fetchDataFromApi() {
+        var term = searchBox.value
+        fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=` + term)
+            .then(res => res.json())
+            .then(data => displayData(data.meals))
+    }
+
+    function displayData(data) {
+        foodContainer.innerText = ''
+
+        data.map((obj, index, arrayObj) => {
+            let foodDiv = document.createElement('div')
+            foodDiv.className = 'foodDiv'
+            foodContainer.appendChild(foodDiv)
+
+            let foodImageDiv = document.createElement('div')
+            foodImageDiv.className = 'foodImage'
+            foodDiv.appendChild(foodImageDiv)
+
+            let foodImg = document.createElement('img')
+            foodImg.className = 'foodImg'
+            foodImg.src = arrayObj[index].strMealThumb
+            foodImageDiv.appendChild(foodImg)
+
+            let foodTitle = document.createElement('h1')
+            foodTitle.className = 'foodTitle'
+            foodTitle.innerText = obj.strMeal
+            foodDiv.appendChild(foodTitle)
+
+            let foodSubTitle = document.createElement('h2')
+            foodSubTitle.className = 'foodSubTitle'
+            foodSubTitle.innerText = obj.strArea + " " + 'Recipe'
+            foodDiv.appendChild(foodSubTitle)
+
+            let foodDesc = document.createElement('h3')
+            foodDesc.className = 'foodDesc'
+            foodDesc.innerText = 'Please click here to see details...'
+            foodDiv.appendChild(foodDesc)
+
+            let clickBtn = document.createElement('button')
+            clickBtn.className = 'clickBtn'
+            clickBtn.innerText = 'Click Here'
+            foodDiv.appendChild(clickBtn)
+
+            clickBtn.onclick = () => {
+                let newDiv = document.createElement('div')
+                newDiv.className = 'newDiv'
+                foodContainer.style.filter = 'blur(2px)'
+                searchAreaDiv.appendChild(newDiv)
+
+                let insertCode = '';
+
+                insertCode += `<div class='imageInnerDiv'>
+
+                                    <img src = ${arrayObj[index].strMealThumb}></img>
+
+                                </div>
+
+                                <div class='contentContainer'>
+                                
+                                    <h1>Recipe Name: <span>${obj.strMeal}</span></h1>
+
+                                    <h2>Country: <span>${obj.strArea} Recipe</span></h2>
+
+                                    <h3>Instructions: </h3>
+
+                                    <p>${obj.strInstructions}</p>
+
+                                    <h3>Ingredients:</h3>
+
+                                    <ul class='ingredientDiv'>
+                                    
+                                        <li>${obj.strIngredient1}</li>
+                                        <li>${obj.strIngredient2}</li>
+                                        <li>${obj.strIngredient3}</li>
+                                        <li>${obj.strIngredient4}</li>
+                                        <li>${obj.strIngredient5}</li>
+                                        <li>${obj.strIngredient6}</li>
+                                        <li>${obj.strIngredient7}</li>
+                                        <li>${obj.strIngredient8}</li>
+                                        <li>${obj.strIngredient9}</li>
+                                        <li>${obj.strIngredient10}</li>
+                                        <li>${obj.strIngredient11}</li>
+                                        <li>${obj.strIngredient12}</li>
+                                        <li>${obj.strIngredient13}</li>
+                                        <li>${obj.strIngredient14}</li>
+                                        <li>${obj.strIngredient15}</li>
+                                        <li>${obj.strIngredient16}</li>
+                                        <li>${obj.strIngredient17}</li>
+                                        <li>${obj.strIngredient18}</li>
+                                        <li>${obj.strIngredient19}</li>
+                                        <li>${obj.strIngredient20}</li>
+                                        
+                                    </ul>
+                                    
+                                </div>`
+
+                newDiv.innerHTML = insertCode;
+
+                //Alternate Method to Show Ingredients 
+
+                // let ulIngre = foodContainer.querySelector('ul')[0]
+
+                // for(key of data){
+                //     for(ele in key){
+                //         if(ele.includes('strIngredient')){
+                //             ulIngre.innerHTML += `<li>${key[ele]}</li>` 
+                //         }
+                //     }
+                // }
+
+                let closeBtn = document.createElement('i')
+                closeBtn.className = 'far fa-window-close'
+                newDiv.appendChild(closeBtn)
+
+                closeBtn.onclick = () => {
+                    newDiv.style.display = 'none'
+                    foodContainer.style.filter = 'blur(0px)'
+                }
+            }
+        })
+    }
+
+    
+    fetchDataFromApi();
+
+    // displayData();
+
+    console.log(fetchedData);
+
+</script>
+
+</html>
